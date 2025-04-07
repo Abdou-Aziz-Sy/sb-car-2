@@ -1,26 +1,30 @@
 package dam.uasz.sbcar2.domain.model;
 
 import jakarta.persistence.*;
-
-import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Owner {
-@Id
-@GeneratedValue(strategy = GenerationType.AUTO)
-private int id;
-private String firstName;
-private String lastName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    private String firstName;
+    private String lastName;
 
-@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-private List<Car> cars;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "car_owner",
+            joinColumns = @JoinColumn(name = "owner_id"),
+            inverseJoinColumns = @JoinColumn(name = "car_id")
+    )
+    private Set<Car> cars;
 
-public Owner() {}
+    public Owner() {}
 
-public Owner(String firstName, String lastName) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-}
+    public Owner(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     public int getId() {
         return id;
@@ -46,11 +50,11 @@ public Owner(String firstName, String lastName) {
         this.lastName = lastName;
     }
 
-    public List<Car> getCars() {
+    public Set<Car> getCars() {
         return cars;
     }
 
-    public void setCars(List<Car> cars) {
+    public void setCars(Set<Car> cars) {
         this.cars = cars;
     }
 }

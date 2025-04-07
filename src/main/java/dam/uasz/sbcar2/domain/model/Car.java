@@ -1,10 +1,9 @@
 package dam.uasz.sbcar2.domain.model;
 
-
 import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
-
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,25 +12,16 @@ public class Car {
     private String model;
     private String color;
     private String modelYear;
-    private int  registerNumber;
+    private int registerNumber;
     private int price;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "owner")
-    private Owner owner;
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
-    }
+    @ManyToMany(mappedBy = "cars", cascade = CascadeType.ALL)
+    private Set<Owner> owners;
 
     public Car() {
     }
 
-    public Car(String brand, String model, String color, String modelYear, int  registerNumber, int price) {
+    public Car(String brand, String model, String color, String modelYear, int registerNumber, int price) {
         this.brand = brand;
         this.model = model;
         this.color = color;
@@ -94,5 +84,13 @@ public class Car {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public Set<Owner> getOwners() {
+        return owners;
+    }
+
+    public void setOwners(Set<Owner> owners) {
+        this.owners = owners;
     }
 }

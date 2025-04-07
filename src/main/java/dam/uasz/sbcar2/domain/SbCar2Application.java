@@ -10,9 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootApplication
-public class SbCar2Application  implements CommandLineRunner {
+public class SbCar2Application implements CommandLineRunner {
 
     private static final Logger logger =
             LoggerFactory.getLogger(SbCar2Application.class);
@@ -28,32 +32,41 @@ public class SbCar2Application  implements CommandLineRunner {
     }
 
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
-        // Ajouter des propriétaires
+        // Nettoyage des données existantes (facultatif)
+        ownerRepository.deleteAll();
+        carRepository.deleteAll();
+
+        // Créer les voitures
+        Car car1 = new Car("Ford", "Mustang", "Red", "2021", 1121, 59000);
+        Car car2 = new Car("Nissan", "Leaf", "White", "2020", 3002, 29000);
+        Car car3 = new Car("Toyota", "Prius", "Silver", "2022", 212, 39000);
+
+        // Créer les propriétaires
         Owner owner1 = new Owner("John", "Johnson");
         Owner owner2 = new Owner("Mary", "Robinson");
+
+        // Initialiser les collections si nécessaire
+        if (owner1.getCars() == null) owner1.setCars(new HashSet<>());
+        if (owner2.getCars() == null) owner2.setCars(new HashSet<>());
+
+        // Créer les relations
+        owner1.getCars().add(car1);
+        owner1.getCars().add(car2);
+        owner2.getCars().add(car2);
+        owner2.getCars().add(car3);
+
+        // Sauvegarder uniquement les propriétaires
         ownerRepository.save(owner1);
         ownerRepository.save(owner2);
 
-        // Ajouter des voitures avec propriétaires
-        Car car1 = new Car("Ford", "Mustang", "Red", "ADF-1121", 59000, 2021);
-        car1.setOwner(owner1);
-        carRepository.save(car1);
-
-        Car car2 = new Car("Nissan", "Leaf", "White", "SSJ-3002", 29000, 2020);
-        car2.setOwner(owner2);
-        carRepository.save(car2);
-
-        Car car3 = new Car("Toyota", "Prius", "Silver", "KKO-0212", 39000, 2022);
-        car3.setOwner(owner2);
-        carRepository.save(car3);
-
-        // Afficher toutes les voitures avec leurs propriétaires
-        for (Car car : carRepository.findAll()) {
-            logger.info("Brand: {}, Model: {}, Owner: {} {}",
-                    car.getBrand(), car.getModel(),
-                    car.getOwner().getFirstName(), car.getOwner().getLastName());
+        // Afficher les relations
+        for (Owner owner : ownerRepository.findAll()) {
+            logger.info("Owner: {} {}", owner.getFirstName(), owner.getLastName());
+            for (Car car : owner.getCars()) {
+                logger.info(" - Car: {}, {}", car.getBrand(), car.getModel());
+            }
         }
     }
-
 }
