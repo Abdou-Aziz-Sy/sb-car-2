@@ -1,6 +1,7 @@
 package dam.uasz.sbcar2.domain.model;
 
 import jakarta.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -15,8 +16,8 @@ public class Car {
     private int registerNumber;
     private int price;
 
-    @ManyToMany(mappedBy = "cars", cascade = CascadeType.ALL)
-    private Set<Owner> owners;
+    @ManyToMany(mappedBy = "cars")
+    private Set<Owner> owners = new HashSet<>();
 
     public Car() {
     }

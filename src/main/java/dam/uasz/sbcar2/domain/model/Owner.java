@@ -1,6 +1,7 @@
 package dam.uasz.sbcar2.domain.model;
 
 import jakarta.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -11,13 +12,13 @@ public class Owner {
     private String firstName;
     private String lastName;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "car_owner",
             joinColumns = @JoinColumn(name = "owner_id"),
             inverseJoinColumns = @JoinColumn(name = "car_id")
     )
-    private Set<Car> cars;
+    private Set<Car> cars = new HashSet<>();
 
     public Owner() {}
 
@@ -25,7 +26,6 @@ public class Owner {
         this.firstName = firstName;
         this.lastName = lastName;
     }
-
     public int getId() {
         return id;
     }
