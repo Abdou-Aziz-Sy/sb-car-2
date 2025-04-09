@@ -1,6 +1,9 @@
 package dam.uasz.sbcar2.domain.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,12 +11,19 @@ import java.util.Set;
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Schema(description = "Identifiant unique de la voiture")
     private int id;
+    @Schema(description = "Marque de la voiture")
     private String brand;
+    @Schema(description = "Modèle de la voiture")
     private String model;
+    @Schema(description = "Couleur de la voiture")
     private String color;
+    @Schema(description = "Année du modèle")
     private String modelYear;
+    @Schema(description = "Numéro d'immatriculation")
     private int registerNumber;
+    @Schema(description = "Prix de la voiture")
     private int price;
 
     @ManyToMany(mappedBy = "cars")
